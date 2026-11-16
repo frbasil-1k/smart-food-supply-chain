@@ -1,0 +1,18 @@
+
+=== apply 002b — 002b_backfill_donation_history.sql ===
+  purpose : five reconstructed legacy snapshots
+  sha256  : 4928c2f5089e82a41867a498d80f4b4c8fd58a48f7bba9a43c1f9eb4b43b76a5
+  preconditions:
+  [ok ] precondition no snapshots yet                           got=0 expected=0
+  [ok ] precondition five donations to cover                    got=5 expected=5
+  original-table rows before: 104
+  ledger: started
+  validation:
+  [ok ] validation   5 reconstructed snapshots                  got=5 expected=5
+  [ok ] validation   5 donations covered                        got=5 expected=5
+  [ok ] validation   all donations covered                      got=0 expected=0
+  [ok ] validation   no fabricated timestamps                   got=0 expected=0
+  [ok ] validation   no actors on snapshots                     got=0 expected=0
+  [ok ] validation   exact approved note                        got=5 expected=5
+  original-table rows after : 104 (expected 104, unchanged: True)
+  ledger: applied (79 ms)

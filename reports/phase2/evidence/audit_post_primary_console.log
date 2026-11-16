@@ -1,0 +1,504 @@
+
+==============================================================================
+A. STATIC SCHEMA EXPORT  (database/schema.sql)
+==============================================================================
+Tables  : 15  (CREATE TABLE objects only)
+Views   : 2  -> vw_donor_sustainability, vw_driver_performance
+Columns : 86
+Triggers: 16
+CHECKs  : 6
+FKs     : 25
+Indexes : 40 (incl. primary keys)
+
+Per-table detail
+table              cols  fk chk idx trg
+app_user              8   2   0   3   0
+branch                8   2   0   2   2
+coverage_area         4   0   0   0   0
+delivery              6   3   0   3   2
+delivery_item         4   2   1   2   2
+delivery_review       6   2   1   2   2
+dependent             6   1   0   0   0
+donation              6   2   0   2   2
+donation_item         7   2   2   2   0
+food_category         2   0   0   1   0
+inspection_log        8   2   0   2   2
+organization          5   0   0   0   0
+route                 6   3   0   3   2
+route_assignment      4   2   1   1   0
+spoilage_record       6   2   1   2   2
+
+CHECK constraints (names; clauses compared in B.3)
+  chk_delivery_quantity
+  chk_donation_quantity
+  chk_food_dates
+  chk_review_rating
+  chk_route_hours
+  chk_spoilage_quantity
+
+Row counts
+  Structure-only export: it carries no rows. AUTO_INCREMENT is not a
+  row count and is not used anywhere in this script.
+  Last verified total (Workbench, 2026-11-13): 104
+  Authoritative per-table counts come from COUNT(*) in B.2.
+
+==============================================================================
+B. LIVE DATABASE INSPECTION (read-only)
+==============================================================================
+
+==============================================================================
+B.1 SERVER
+==============================================================================
+Driver         : mysql-connector-python
+Server         : 8.0.46
+Database       : smart_food_supply_chain
+Connected as   : root@localhost
+Isolation      : REPEATABLE-READ
+Read-only txn  : True
+sql_mode       : ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+CHECK enforced : not asserted from data. See B.3 (catalog +
+                 ENFORCED flag) and --negative-probes (proof).
+
+==============================================================================
+B.2 ROW COUNTS (COUNT(*), authoritative)
+==============================================================================
+table                    rows
+app_user                   15
+branch                      5
+coverage_area               5
+delivery                    5
+delivery_item              15
+delivery_review             5
+dependent                   6
+donation                    5
+donation_item              13
+food_category               8
+inspection_log              5
+organization                3
+route                       5
+route_assignment            8
+spoilage_record             1
+TOTAL                     104
+
+COUNT(*) total : 104
+Workbench total: 104   delta +0
+
+==============================================================================
+B.3 LIVE vs EXPORT (definitions, semantic)
+==============================================================================
+Stage 1 - tables and column definitions
+  live objects: 15 base table(s), 2 view(s)
+  export:       15 CREATE TABLE, 2 CREATE VIEW
+  PASS  table set matches   missing=[] extra=[]
+  PASS  no view is classified as a table   leaked=[]
+  PASS  app_user.columns
+  PASS  branch.columns
+  PASS  coverage_area.columns
+  PASS  delivery.columns
+  PASS  delivery_item.columns
+  PASS  delivery_review.columns
+  PASS  dependent.columns
+  PASS  donation.columns
+  PASS  donation_item.columns
+  PASS  food_category.columns
+  PASS  inspection_log.columns
+  PASS  organization.columns
+  PASS  route.columns
+  PASS  route_assignment.columns
+  PASS  spoilage_record.columns
+
+Stage 2 - primary keys and indexes
+  PASS  app_user.primary_key   export=('user_id',) live=('user_id',)
+  PASS  branch.primary_key   export=('branch_id',) live=('branch_id',)
+  PASS  coverage_area.primary_key   export=('coverage_area_id',) live=('coverage_area_id',)
+  PASS  delivery.primary_key   export=('delivery_id',) live=('delivery_id',)
+  PASS  delivery_item.primary_key   export=('delivery_item_id',) live=('delivery_item_id',)
+  PASS  delivery_review.primary_key   export=('review_id',) live=('review_id',)
+  PASS  dependent.primary_key   export=('driver_user_id', 'dependent_no') live=('driver_user_id', 'dependent_no')
+  PASS  donation.primary_key   export=('donation_id',) live=('donation_id',)
+  PASS  donation_item.primary_key   export=('food_item_id',) live=('food_item_id',)
+  PASS  food_category.primary_key   export=('category_id',) live=('category_id',)
+  PASS  inspection_log.primary_key   export=('inspection_id',) live=('inspection_id',)
+  PASS  organization.primary_key   export=('organization_id',) live=('organization_id',)
+  PASS  route.primary_key   export=('route_id',) live=('route_id',)
+  PASS  route_assignment.primary_key   export=('user_id', 'route_id') live=('user_id', 'route_id')
+  PASS  spoilage_record.primary_key   export=('spoilage_id',) live=('spoilage_id',)
+  PASS  app_user.indexes   3 index(es)
+  PASS  branch.indexes   2 index(es)
+  PASS  coverage_area.indexes   0 index(es)
+  PASS  delivery.indexes   3 index(es)
+  PASS  delivery_item.indexes   2 index(es)
+  PASS  delivery_review.indexes   2 index(es)
+  PASS  dependent.indexes   0 index(es)
+  PASS  donation.indexes   2 index(es)
+  PASS  donation_item.indexes   2 index(es)
+  PASS  food_category.indexes   1 index(es)
+  PASS  inspection_log.indexes   2 index(es)
+  PASS  organization.indexes   0 index(es)
+  PASS  route.indexes   3 index(es)
+  PASS  route_assignment.indexes   1 index(es)
+  PASS  spoilage_record.indexes   2 index(es)
+
+Stage 3 - foreign keys and referential rules
+  PASS  app_user.foreign_keys   2 FK(s)
+  PASS  branch.foreign_keys   2 FK(s)
+  PASS  coverage_area.foreign_keys   0 FK(s)
+  PASS  delivery.foreign_keys   3 FK(s)
+  PASS  delivery_item.foreign_keys   2 FK(s)
+  PASS  delivery_review.foreign_keys   2 FK(s)
+  PASS  dependent.foreign_keys   1 FK(s)
+  PASS  donation.foreign_keys   2 FK(s)
+  PASS  donation_item.foreign_keys   2 FK(s)
+  PASS  food_category.foreign_keys   0 FK(s)
+  PASS  inspection_log.foreign_keys   2 FK(s)
+  PASS  organization.foreign_keys   0 FK(s)
+  PASS  route.foreign_keys   3 FK(s)
+  PASS  route_assignment.foreign_keys   2 FK(s)
+  PASS  spoilage_record.foreign_keys   2 FK(s)
+
+Stage 4 - CHECK constraints (definition + ENFORCED flag)
+  catalog exposes ENFORCED: yes
+  export defines 6 / live has 6
+  PASS  check chk_delivery_quantity   ENFORCED=YES
+  PASS  check chk_review_rating   ENFORCED=YES
+  PASS  check chk_donation_quantity   ENFORCED=YES
+  PASS  check chk_food_dates   ENFORCED=YES
+  PASS  check chk_route_hours   ENFORCED=YES
+  PASS  check chk_spoilage_quantity   ENFORCED=YES
+
+Stage 5 - triggers (semantic body comparison)
+  PASS  trigger set matches   missing=[] extra=[]
+  PASS  trigger trg_branch_manager_insert   identical after normalisation
+  PASS  trigger trg_branch_manager_update   identical after normalisation
+  PASS  trigger trg_delivery_inspection_insert   identical after normalisation
+  PASS  trigger trg_delivery_inspection_update   identical after normalisation
+  PASS  trigger trg_delivery_item_insert   identical after normalisation
+  PASS  trigger trg_delivery_item_update   identical after normalisation
+  PASS  trigger trg_review_manager_insert   identical after normalisation
+  PASS  trigger trg_review_manager_update   identical after normalisation
+  PASS  trigger trg_donation_donor_insert   identical after normalisation
+  PASS  trigger trg_donation_donor_update   identical after normalisation
+  PASS  trigger trg_inspector_insert   identical after normalisation
+  PASS  trigger trg_inspector_update   identical after normalisation
+  PASS  trigger trg_route_driver_insert   identical after normalisation
+  PASS  trigger trg_route_driver_update   identical after normalisation
+  PASS  trigger trg_spoilage_quantity_insert   identical after normalisation
+  PASS  trigger trg_spoilage_quantity_update   identical after normalisation
+
+Stage 6 - views (semantic definition comparison)
+  PASS  view set matches   missing=[] extra=[]
+  PASS  view vw_donor_sustainability   identical after normalisation
+  PASS  view vw_driver_performance   identical after normalisation
+
+Stage 7 - table options
+  PASS  app_user.engine   InnoDB
+  PASS  app_user.collation
+  PASS  branch.engine   InnoDB
+  PASS  branch.collation
+  PASS  coverage_area.engine   InnoDB
+  PASS  coverage_area.collation
+  PASS  delivery.engine   InnoDB
+  PASS  delivery.collation
+  PASS  delivery_item.engine   InnoDB
+  PASS  delivery_item.collation
+  PASS  delivery_review.engine   InnoDB
+  PASS  delivery_review.collation
+  PASS  dependent.engine   InnoDB
+  PASS  dependent.collation
+  PASS  donation.engine   InnoDB
+  PASS  donation.collation
+  PASS  donation_item.engine   InnoDB
+  PASS  donation_item.collation
+  PASS  food_category.engine   InnoDB
+  PASS  food_category.collation
+  PASS  inspection_log.engine   InnoDB
+  PASS  inspection_log.collation
+  PASS  organization.engine   InnoDB
+  PASS  organization.collation
+  PASS  route.engine   InnoDB
+  PASS  route.collation
+  PASS  route_assignment.engine   InnoDB
+  PASS  route_assignment.collation
+  PASS  spoilage_record.engine   InnoDB
+  PASS  spoilage_record.collation
+
+==============================================================================
+B.4 OBJECTS
+==============================================================================
+Views
+  vw_donor_sustainability        rows=4
+  vw_driver_performance          rows=5
+
+Triggers
+  branch             BEFORE INSERT trg_branch_manager_insert
+  branch             BEFORE UPDATE trg_branch_manager_update
+  delivery           BEFORE INSERT trg_delivery_inspection_insert
+  delivery           BEFORE UPDATE trg_delivery_inspection_update
+  delivery_item      BEFORE INSERT trg_delivery_item_insert
+  delivery_item      BEFORE UPDATE trg_delivery_item_update
+  delivery_review    BEFORE INSERT trg_review_manager_insert
+  delivery_review    BEFORE UPDATE trg_review_manager_update
+  donation           BEFORE INSERT trg_donation_donor_insert
+  donation           BEFORE UPDATE trg_donation_donor_update
+  inspection_log     BEFORE INSERT trg_inspector_insert
+  inspection_log     BEFORE UPDATE trg_inspector_update
+  route              BEFORE INSERT trg_route_driver_insert
+  route              BEFORE UPDATE trg_route_driver_update
+  spoilage_record    BEFORE INSERT trg_spoilage_quantity_insert
+  spoilage_record    BEFORE UPDATE trg_spoilage_quantity_update
+
+Indexes
+  app_user           UNIQUE email                    (email) card=15
+  app_user           INDEX  fk_user_branch           (primary_branch_id) card=6
+  app_user           UNIQUE PRIMARY                  (user_id) card=15
+  app_user           INDEX  supervisor_user_id       (supervisor_user_id) card=4
+  branch             INDEX  organization_id          (organization_id) card=3
+  branch             UNIQUE PRIMARY                  (branch_id) card=5
+  branch             INDEX  regional_manager_user_id (regional_manager_user_id) card=3
+  coverage_area      UNIQUE PRIMARY                  (coverage_area_id) card=5
+  delivery           INDEX  donation_id              (donation_id) card=4
+  delivery           UNIQUE PRIMARY                  (delivery_id) card=5
+  delivery           INDEX  recipient_branch_id      (recipient_branch_id) card=5
+  delivery           INDEX  route_id                 (route_id) card=5
+  delivery_item      UNIQUE delivery_id              (delivery_id,food_item_id) card=15
+  delivery_item      INDEX  food_item_id             (food_item_id) card=12
+  delivery_item      UNIQUE PRIMARY                  (delivery_item_id) card=15
+  delivery_review    UNIQUE delivery_id              (delivery_id) card=5
+  delivery_review    UNIQUE PRIMARY                  (review_id) card=5
+  delivery_review    INDEX  reviewer_user_id         (reviewer_user_id) card=3
+  dependent          UNIQUE PRIMARY                  (driver_user_id,dependent_no) card=6
+  donation           INDEX  donor_user_id            (donor_user_id) card=4
+  donation           INDEX  pickup_route_id          (pickup_route_id) card=4
+  donation           UNIQUE PRIMARY                  (donation_id) card=4
+  donation_item      INDEX  category_id              (category_id) card=6
+  donation_item      INDEX  donation_id              (donation_id) card=4
+  donation_item      UNIQUE PRIMARY                  (food_item_id) card=12
+  food_category      UNIQUE category_name            (category_name) card=8
+  food_category      UNIQUE PRIMARY                  (category_id) card=8
+  inspection_log     INDEX  donation_id              (donation_id) card=4
+  inspection_log     INDEX  inspector_user_id        (inspector_user_id) card=3
+  inspection_log     UNIQUE PRIMARY                  (inspection_id) card=4
+  organization       UNIQUE PRIMARY                  (organization_id) card=3
+  route              INDEX  coverage_area_id         (coverage_area_id) card=5
+  route              INDEX  designated_driver_user_id (designated_driver_user_id) card=5
+  route              INDEX  managing_branch_id       (managing_branch_id) card=5
+  route              UNIQUE PRIMARY                  (route_id) card=5
+  route_assignment   UNIQUE PRIMARY                  (user_id,route_id) card=8
+  route_assignment   INDEX  route_id                 (route_id) card=5
+  spoilage_record    INDEX  food_item_id             (food_item_id) card=1
+  spoilage_record    UNIQUE PRIMARY                  (spoilage_id) card=1
+  spoilage_record    INDEX  reported_by_user_id      (reported_by_user_id) card=1
+
+==============================================================================
+B.5 DATA PROFILE
+==============================================================================
+
+  donation_status
+    COMPLETED              4
+    APPROVED               1
+
+  safety_status
+    PASSED                 5
+
+  delivery_status
+    DELIVERED              5
+
+  user_role
+    DRIVER                 5
+    DONOR                  4
+    NGO_MANAGER            3
+    SAFETY_INSPECTOR       3
+
+  account_status
+    ACTIVE                 15
+
+==============================================================================
+B.6 INTEGRITY - INVARIANTS
+==============================================================================
+INVARIANT checks - each must return 0. A FAIL is real inconsistent
+data, not a cosmetic warning.
+
+  alloc_le_donated                   PASS  n=0
+      asserts: delivered + spoiled never exceeds the donated quantity of an item (correlated subqueries, so neither child table fans out)
+  delivery_item_same_donation        PASS  n=0
+      asserts: every delivery_item points at a food item of the delivery's donation
+  moved_delivery_has_passed          PASS  n=0
+      asserts: no IN_TRANSIT/DELIVERED delivery unless the LATEST inspection passed; no inspection at all counts as a failure
+  route_driver_has_role_active       PASS  n=0
+      asserts: every ACTIVE route's designated driver holds the DRIVER role now; inactive routes are excluded because their designation is historical after an approved role change
+  branch_manager_has_role            PASS  n=0
+      asserts: every branch's regional manager still has the NGO_MANAGER role
+  route_assignment_role_allowed      PASS  n=0
+      asserts: every route_assignment belongs to a DRIVER or SAFETY_INSPECTOR; NGO_MANAGER and DONOR are never assignable
+  no_orphan_branch_refs              PASS  n=0
+      asserts: app_user.primary_branch_id and branch.organization_id resolve
+
+  Declarative constraints are compared in B.3 against the catalog.
+  Positive data cannot prove enforcement: these checks would pass
+  even if the server ignored every CHECK. B.10 tests the logic of
+  the inspection gate; --negative-probes tests the server's CHECKs.
+
+==============================================================================
+B.7 INTEGRITY - OBSERVATIONS
+==============================================================================
+OBSERVATION checks - business signals, not defects.
+
+  donations_without_items            n=0
+      meaning: donation headers with no items
+  deliveries_without_items           n=0
+      meaning: deliveries with nothing allocated yet (normal for PLANNED)
+  approved_without_inspection        n=0
+      meaning: APPROVED/PARTIALLY_DISTRIBUTED/COMPLETED with no PASSED inspection - state drift the API state machine prevents going forward
+  duplicate_branch_deliveries        n=0
+      meaning: same donation to the same branch more than once - allowed by decision, surfaced so allocation can explain it
+  expired_items_still_open           n=0
+      meaning: items past best_before on PENDING/SCHEDULED/COLLECTED donations
+  branches_without_manager           n=0
+      meaning: branches with no regional manager (nobody can review deliveries)
+  spoilage_by_non_operational        n=0
+      meaning: spoilage reported by a role that cannot normally witness it
+  review_before_handover             n=0
+      meaning: reviews whose reviewer is no longer the receiving branch's manager - expected after a manager handover; the trigger guarantees the relationship at insert time, so this is a signal, not corruption
+  delivery_driver_history            NOT AVAILABLE
+      DELIVERY.driver_user_id is not present; the actual driver of a historical delivery cannot be established from the pre-F4 schema. DELIVERY stores only route_id, and ROUTE.designated_driver_user_id is the route's current designation, not necessarily the driver at delivery time. No attribution is inferred and no id is backfilled. Becomes auditable once F4 adds a nullable delivery.driver_user_id.
+  route_driver_role_changed_inactive n=0
+      meaning: INACTIVE routes whose former designated driver is no longer a DRIVER - expected after a P1-approved role change; keeps the route history readable without treating it as corruption. The same active/historical split applies to deliveries above.
+
+  route_assignment by role
+    DRIVER                5  allowed
+    SAFETY_INSPECTOR      3  allowed
+    permitted roles: DRIVER, SAFETY_INSPECTOR
+
+  The same rule is asserted as an INVARIANT in B.6 (route_assignment_role_allowed); the table above exists so a disallowed role is visible in context, not only as a count.
+
+==============================================================================
+B.8 QUERY PLANS
+==============================================================================
+
+  expiry monitor
+    id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra
+    1 | SIMPLE | d | None | ALL | PRIMARY | None | None | None | 5 | 50.0 | Using where; Using temporary; Using filesort
+    1 | SIMPLE | i | None | ref | donation_id | donation_id | 4 | smart_food_supply_chain.d.donation_id | 3 | 100.0 | None
+
+  donation list, page 1
+    id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra
+    1 | SIMPLE | d | None | ALL | donor_user_id | None | None | None | 5 | 100.0 | Using filesort
+    1 | SIMPLE | u | None | eq_ref | PRIMARY | PRIMARY | 4 | smart_food_supply_chain.d.donor_user_id | 1 | 100.0 | None
+
+  branch distribution
+    id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra
+    1 | SIMPLE | d | None | ALL | PRIMARY,recipient_branch_id | None | None | None | 5 | 20.0 | Using where; Using temporary
+    1 | SIMPLE | b | None | eq_ref | PRIMARY,organization_id,regional_manager_user_id | PRIMARY | 4 | smart_food_supply_chain.d.recipient_branch_id | 1 | 100.0 | None
+    1 | SIMPLE | i | None | ref | delivery_id | delivery_id | 4 | smart_food_supply_chain.d.delivery_id | 3 | 100.0 | None
+
+  donor sustainability view (existing)
+    id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra
+    1 | PRIMARY | u | None | ALL | None | None | None | None | 15 | 25.0 | Using where
+    1 | PRIMARY | <derived5> | None | ref | <auto_key0> | <auto_key0> | 4 | smart_food_supply_chain.u.user_id | 2 | 100.0 | None
+    1 | PRIMARY | <derived4> | None | ref | <auto_key0> | <auto_key0> | 4 | smart_food_supply_chain.u.user_id | 2 | 100.0 | None
+    1 | PRIMARY | <derived3> | None | ALL | None | None | None | None | 2 | 100.0 | Using where; Using join buffer (hash join)
+    3 | DERIVED | s | None | ALL | food_item_id | None | None | None | 1 | 100.0 | Using temporary
+    3 | DERIVED | di | None | eq_ref | PRIMARY,donation_id | PRIMARY | 4 | smart_food_supply_chain.s.food_item_id | 1 | 100.0 | None
+    3 | DERIVED | d | None | eq_ref | PRIMARY,donor_user_id | PRIMARY | 4 | smart_food_supply_chain.di.donation_id | 1 | 100.0 | None
+    4 | DERIVED | de | None | index | PRIMARY,donation_id | donation_id | 4 | None | 5 | 100.0 | Using index; Using temporary
+    4 | DERIVED | d | None | eq_ref | PRIMARY,donor_user_id | PRIMARY | 4 | smart_food_supply_chain.de.donation_id | 1 | 100.0 | None
+    4 | DERIVED | di | None | ref | delivery_id | delivery_id | 4 | smart_food_supply_chain.de.delivery_id | 3 | 100.0 | None
+    5 | DERIVED | d | None | index | donor_user_id | donor_user_id | 4 | None | 5 | 100.0 | Using index
+    5 | DERIVED | di | None | ref | donation_id | donation_id | 4 | smart_food_supply_chain.d.donation_id | 3 | 100.0 | None
+
+  driver performance view (attributed via route)
+    id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra
+    1 | PRIMARY | <derived2> | None | ALL | None | None | None | None | 11 | 100.0 | None
+    2 | DERIVED | u | None | ALL | None | None | None | None | 15 | 25.0 | Using where; Using filesort
+    2 | DERIVED | r | None | ref | designated_driver_user_id | designated_driver_user_id | 4 | smart_food_supply_chain.u.user_id | 1 | 100.0 | Using index
+    2 | DERIVED | d | None | ref | route_id | route_id | 4 | smart_food_supply_chain.r.route_id | 1 | 100.0 | None
+    2 | DERIVED | di | None | ref | delivery_id | delivery_id | 4 | smart_food_supply_chain.d.delivery_id | 3 | 100.0 | None
+
+  proposed donor-impact query (B.11)
+    id | select_type | table | partitions | type | possible_keys | key | key_len | ref | rows | filtered | Extra
+    1 | PRIMARY | u | None | ALL | None | None | None | None | 15 | 25.0 | Using where; Using temporary; Using filesort
+    1 | PRIMARY | <derived2> | None | ref | <auto_key0> | <auto_key0> | 4 | smart_food_supply_chain.u.user_id | 2 | 100.0 | None
+    1 | PRIMARY | <derived3> | None | ALL | None | None | None | None | 2 | 100.0 | Using where; Using join buffer (hash join)
+    1 | PRIMARY | <derived4> | None | ALL | None | None | None | None | 2 | 100.0 | Using where; Using join buffer (hash join)
+    4 | DERIVED | s | None | ALL | food_item_id | None | None | None | 1 | 100.0 | Using temporary
+    4 | DERIVED | i2 | None | eq_ref | PRIMARY,donation_id | PRIMARY | 4 | smart_food_supply_chain.s.food_item_id | 1 | 100.0 | None
+    4 | DERIVED | d | None | eq_ref | PRIMARY,donor_user_id | PRIMARY | 4 | smart_food_supply_chain.i2.donation_id | 1 | 80.0 | Using where
+    3 | DERIVED | d2 | None | ALL | PRIMARY,donation_id | None | None | None | 5 | 20.0 | Using where; Using temporary
+    3 | DERIVED | d | None | eq_ref | PRIMARY,donor_user_id | PRIMARY | 4 | smart_food_supply_chain.d2.donation_id | 1 | 80.0 | Using where
+    3 | DERIVED | di | None | ref | delivery_id | delivery_id | 4 | smart_food_supply_chain.d2.delivery_id | 3 | 100.0 | None
+    2 | DERIVED | d | None | ALL | donor_user_id | None | None | None | 5 | 80.0 | Using where; Using filesort
+    2 | DERIVED | i | None | ref | donation_id | donation_id | 4 | smart_food_supply_chain.d.donation_id | 3 | 100.0 | None
+
+==============================================================================
+B.9 POST-MIGRATION CHECKS
+==============================================================================
+Runs only when the proposed objects exist; otherwise skipped, not
+failed, so the same script stays useful after each migration.
+
+  skipped  user_credential (F1 not applied)
+  skipped  donation_status_history (F2 not applied)
+  skipped  donation.pickup_address (F3 not applied)
+  skipped  delivery.driver_user_id (F4 not applied)
+  skipped  chk_temperature_range (F8 not applied)
+
+==============================================================================
+B.10 INSPECTION GATE SELF-TEST
+==============================================================================
+Synthetic cases evaluated with the same predicate as B.6.
+No table is read and nothing is written.
+
+  case 1: flagged=True  no inspection at all -> must be flagged
+  case 2: flagged=True  latest inspection FAILED -> flagged
+  case 3: flagged=False latest inspection PASSED -> clear
+  case 4: flagged=False FAILED then PASSED -> clear (latest wins)
+  case 5: flagged=False status PLANNED -> gate not applicable
+  PASS  inspection gate predicate
+
+==============================================================================
+B.11 DONOR IMPACT - PROPOSED QUERY PREVIEW
+==============================================================================
+The existing view counts delivery allocations regardless of
+delivery status. Below: the same donors under the proposed query
+(DELIVERED only, CANCELLED excluded from all three aggregates,
+spoiled kept separate) and the existing view. Nothing is created
+or modified; this is a SELECT preview.
+
+donor                        donated DELIVERED  spoiled  undistrib.  view says
+Restaurant Donor               17.00     17.00     0.00        0.00      17.00
+Hotel Donor                    20.00     15.00     1.50        3.50      15.00
+Demo Donor                     15.00     15.00     0.00        0.00      15.00
+Bakery Donor                   14.00     14.00     0.00        0.00      14.00
+
+  0 of 4 donor(s) differ between the proposed
+  query and the existing view (the gap is un-DELIVERED allocations).
+
+  Definitions used here:
+    CANCELLED donations are excluded from ALL THREE aggregates, so a
+    cancelled donation contributes nothing to donated, delivered or
+    spoiled - the denominators cannot disagree with each other.
+    total_donated_kg = SUM(donation_item.quantity_kg) over non-cancelled
+                       donations
+    delivered_kg     = SUM(delivery_item.quantity_delivered_kg) where
+                       delivery.delivery_status = 'DELIVERED' and the
+                       donation is not CANCELLED
+    spoiled_kg       = SUM(spoilage_record.quantity_spoiled_kg) over
+                       non-cancelled donations, kept separate so it is
+                       never counted as impact
+    undistributed_balance_kg = donated - delivered - spoiled. This is an
+                       ACCOUNTING BALANCE, not a physical stock figure:
+                       the food may be in transit, awaiting inspection,
+                       or already gone without a recorded delivery or
+                       spoilage entry. Label it 'undistributed balance',
+                       never 'on hand' or 'remaining stock'.
+
+==============================================================================
+SUMMARY
+==============================================================================
+INVARIANTS run : 7  passed 7  failed 0
+Checks not run : 0
+Not auditable by design: 1 (informational, does not affect the exit code)
+  delivery_driver_history:
+    DELIVERY.driver_user_id is not present; the actual driver of a historical delivery cannot be established from the pre-F4 schema. DELIVERY stores only route_id, and ROUTE.designated_driver_user_id is the route's current designation, not necessarily the driver at delivery time. No attribution is inferred and no id is backfilled. Becomes auditable once F4 adds a nullable delivery.driver_user_id.
+Structural/semantic failures: 0
+
+RESULT: exit 0

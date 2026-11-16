@@ -1,0 +1,12 @@
+# log_bin_trust_function_creators — BEFORE (captured 2026-11-16 16:07:14)
+# connection: root via protected option file outside the project, 127.0.0.1:3306
+
++---------+----------+------+---------+---------------+-------------------+---------------------+---------------------------------------------+--------------------------------------+
+| version | hostname | port | log_bin | binlog_format | trust_fn_creators | log_replica_updates | datadir                                     | server_uuid                          |
++---------+----------+------+---------+---------------+-------------------+---------------------+---------------------------------------------+--------------------------------------+
+| 8.0.46  | basil    | 3306 |       1 | ROW           |                 0 |                   1 | C:\ProgramData\MySQL\MySQL Server 8.0\Data\ | bcd2cd6f-b84a-11f1-9d2d-48e7dabe009c |
++---------+----------+------+---------+---------------+-------------------+---------------------+---------------------------------------------+--------------------------------------+
+
+-- persisted configuration (should be EMPTY before any change) --
+
+-- full persisted variable list (context: what else is persisted) --

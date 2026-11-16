@@ -1,0 +1,19 @@
+# STEP 7a: the five new triggers, before restoring the server variable (2026-11-16 16:09:22)
+
++--------------------------------+--------+--------+-------------------------+------------------------+
+| TRIGGER_NAME                   | event  | timing | tbl                     | DEFINER                |
++--------------------------------+--------+--------+-------------------------+------------------------+
+| trg_delivery_driver_insert     | INSERT | BEFORE | delivery                | sfc_migrator@localhost |
+| trg_delivery_driver_update     | UPDATE | BEFORE | delivery                | sfc_migrator@localhost |
+| trg_donation_item_update_guard | UPDATE | BEFORE | donation_item           | sfc_migrator@localhost |
+| trg_dsh_block_delete           | DELETE | BEFORE | donation_status_history | sfc_migrator@localhost |
+| trg_dsh_block_update           | UPDATE | BEFORE | donation_status_history | sfc_migrator@localhost |
++--------------------------------+--------+--------+-------------------------+------------------------+
+
++----------------+------+-----------------+------------+-----------+--------------------+
+| triggers_total | dsh  | delivery_driver | item_guard | snapshots | applied_migrations |
++----------------+------+-----------------+------------+-----------+--------------------+
+|             21 |    2 |               2 |          1 |         5 |                  7 |
++----------------+------+-----------------+------------+-----------+--------------------+
+
+# expected: 21 total (16 original + 5 new), definer sfc_migrator@localhost

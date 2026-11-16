@@ -1,0 +1,89 @@
+=== STEP 3: partial 002a state verification (2026-11-16 16:07:34) ===
+
+-- current database and identity --
++-----------------------------+---------+
+| current_db                  | version |
++-----------------------------+---------+
+| smart_food_supply_chain_dev | 8.0.46  |
++-----------------------------+---------+
+
+-- ledger contents (preserved verbatim) --
+ERROR 1054 (42S22) at line 1: Unknown column 'filename' in 'field list'
+
+-- donation_status_history object state --
++--------------+----------+-----------+--------+------------+--------------+-------------+
+| table_exists | rows_now | col_count | checks | unique_idx | dsh_triggers | inbound_fks |
++--------------+----------+-----------+--------+------------+--------------+-------------+
+|            1 |        0 |         9 |      3 |          1 |            0 |           0 |
++--------------+----------+-----------+--------+------------+--------------+-------------+
+
+-- columns --
++-----+---------------------------+---------------------------------------------------------------------------------------------------------------+-------------+------------------+
+| ord | COLUMN_NAME               | COLUMN_TYPE                                                                                                   | IS_NULLABLE | EXTRA            |
++-----+---------------------------+---------------------------------------------------------------------------------------------------------------+-------------+------------------+
+|   1 | history_id                | bigint unsigned                                                                                               | NO          | auto_increment   |
+|   2 | donation_id               | int                                                                                                           | NO          |                  |
+|   3 | from_status               | enum('PENDING','SCHEDULED','COLLECTED','APPROVED','REJECTED','PARTIALLY_DISTRIBUTED','COMPLETED','CANCELLED') | YES         |                  |
+|   4 | to_status                 | enum('PENDING','SCHEDULED','COLLECTED','APPROVED','REJECTED','PARTIALLY_DISTRIBUTED','COMPLETED','CANCELLED') | NO          |                  |
+|   5 | changed_by_user_id        | int                                                                                                           | YES         |                  |
+|   6 | changed_at                | datetime                                                                                                      | YES         |                  |
+|   7 | is_reconstructed          | tinyint(1)                                                                                                    | NO          |                  |
+|   8 | note                      | varchar(255)                                                                                                  | YES         |                  |
+|   9 | reconstructed_donation_id | int                                                                                                           | YES         | STORED GENERATED |
++-----+---------------------------+---------------------------------------------------------------------------------------------------------------+-------------+------------------+
+
+-- CHECK constraints --
++--------------------------------+----------------------------------------------------------------------------------------------------------------------+
+| CONSTRAINT_NAME                | CHECK_CLAUSE                                                                                                         |
++--------------------------------+----------------------------------------------------------------------------------------------------------------------+
+| chk_dsh_time_semantics         | (((`is_reconstructed` = 0) and (`changed_at` is not null)) or ((`is_reconstructed` = 1) and (`changed_at` is null))) |
+| chk_dsh_distinct_status        | ((`from_status` is null) or (`from_status` <> `to_status`))                                                          |
+| chk_dsh_reconstructed_no_actor | ((`is_reconstructed` = 0) or (`changed_by_user_id` is null))                                                         |
++--------------------------------+----------------------------------------------------------------------------------------------------------------------+
+
+-- FKs owned by the table --
++-----------------+-----------------------+
+| CONSTRAINT_NAME | REFERENCED_TABLE_NAME |
++-----------------+-----------------------+
+| fk_dsh_donation | donation              |
+| fk_dsh_user     | app_user              |
++-----------------+-----------------------+
+
+-- all triggers in dev (expect 16 originals, no trg_dsh_*) --
+16
+
+-- all objects in dev (unexpected objects?) --
++-------------------------+------------+
+| TABLE_NAME              | TABLE_TYPE |
++-------------------------+------------+
+| app_user                | BASE TABLE |
+| branch                  | BASE TABLE |
+| coverage_area           | BASE TABLE |
+| delivery                | BASE TABLE |
+| delivery_item           | BASE TABLE |
+| delivery_review         | BASE TABLE |
+| dependent               | BASE TABLE |
+| donation                | BASE TABLE |
+| donation_item           | BASE TABLE |
+| donation_status_history | BASE TABLE |
+| food_category           | BASE TABLE |
+| inspection_log          | BASE TABLE |
+| organization            | BASE TABLE |
+| route                   | BASE TABLE |
+| route_assignment        | BASE TABLE |
+| schema_migrations       | BASE TABLE |
+| spoilage_record         | BASE TABLE |
+| user_credential         | BASE TABLE |
+| vw_donor_sustainability | VIEW       |
+| vw_driver_performance   | VIEW       |
++-------------------------+------------+
+
+-- 001 artefacts intact --
++-------------+-----------+
+| credentials | cred_cols |
++-------------+-----------+
+|           0 |        11 |
++-------------+-----------+
+
+-- original rows in dev still 104? --
+104

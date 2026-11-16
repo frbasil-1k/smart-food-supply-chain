@@ -1,0 +1,17 @@
+
+=== apply 004a — 004a_delivery_attribution.sql ===
+  purpose : driver_user_id, scheduled_for, FK and indexes
+  sha256  : a01608f0728eee8b0454c77adebf9c6a68f70be5c808cf210a7185c26945024e
+  preconditions:
+  [ok ] precondition columns absent                             got=0 expected=0
+  original-table rows before: 104
+  ledger: started
+  validation:
+  [ok ] validation   2 nullable columns                         got=2 expected=2
+  [ok ] validation   fk_delivery_driver present                 got=1 expected=1
+  [ok ] validation   2 new indexes                              got=2 expected=2
+  [ok ] validation   5 legacy drivers NULL                      got=5 expected=5
+  [ok ] validation   5 legacy schedules NULL                    got=5 expected=5
+  [ok ] validation   no forbidden unique pair                   got=0 expected=0
+  original-table rows after : 104 (expected 104, unchanged: True)
+  ledger: applied (167 ms)

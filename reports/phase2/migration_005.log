@@ -1,0 +1,15 @@
+
+=== apply 005 — 005_donation_item_update_guard.sql ===
+  purpose : shrink guard and re-parenting guard
+  sha256  : 8eebbf8acea98a416b62d9104f21487874060859c511f269824ee4c7cd87efee
+  preconditions:
+  [ok ] precondition trigger absent                             got=0 expected=0
+  [ok ] precondition no pre-existing over-allocation            got=0 expected=0
+  original-table rows before: 104
+  ledger: started
+  validation:
+  [ok ] validation   trigger present                            got=1 expected=1
+  [ok ] validation   no over-allocation                         got=0 expected=0
+  [ok ] validation   no cross-donation allocation               got=0 expected=0
+  original-table rows after : 104 (expected 104, unchanged: True)
+  ledger: applied (47 ms)

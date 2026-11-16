@@ -1,0 +1,17 @@
+
+=== apply 007 — 007_vw_donor_impact.sql ===
+  purpose : donor impact view (SQL SECURITY INVOKER)
+  sha256  : fa01355f8e50084ca9735c51b97895825b1b194c4e287be340b4e914224871a6
+  preconditions:
+  [ok ] precondition view absent                                got=0 expected=0
+  [ok ] precondition original views present                     got=2 expected=2
+  original-table rows before: 104
+  ledger: started
+  validation:
+  [ok ] validation   view exists as INVOKER                     got=1 expected=1
+  [ok ] validation   original views preserved                   got=2 expected=2
+  [ok ] validation   4 donor rows                               got=4 expected=4
+  [ok ] validation   no negative balance                        got=0 expected=0
+  [ok ] validation   delivered never exceeds donated            got=0 expected=0
+  original-table rows after : 104 (expected 104, unchanged: True)
+  ledger: applied (148 ms)

@@ -1,0 +1,10 @@
+RESTORE VERIFIED - 20261116_160127
+source database : smart_food_supply_chain (untouched, read-only audit)
+restored into   : sfc_restore_verify
+backup file     : C:/backup/sfc_before_phase2_20261116_160043.sql
+backup sha256   : e04b8c4c818ac30a024278d5e568ee027288ca7289e4c5806a0eb2b85d5f1d4c
+objects         : 15 tables / 2 views / 16 triggers / 6 checks / 25 FKs
+rows            : 104
+audit           : exit 0, 7/7 invariants, 0 failures
+fingerprint     : 42285b6097d4b84fc3323f306cf44031e8c621433697464b9265894ced9565cb
+verdict         : PASS

@@ -1,0 +1,17 @@
+
+=== apply 001 — 001_user_credential.sql ===
+  purpose : USER_CREDENTIAL table, scrypt v1, token pairing
+  sha256  : 2c42344488b703234ea1ae1ab53196e6f86051dd10993b5048094aa95c1ea2ff
+  preconditions:
+  [ok ] precondition table absent                               got=0 expected=0
+  [ok ] precondition columns absent                             got=0 expected=0
+  original-table rows before: 104
+  ledger: started
+  validation:
+  [ok ] validation   11 columns                                 got=11 expected=11
+  [ok ] validation   2 CHECK constraints                        got=2 expected=2
+  [ok ] validation   1 unique index                             got=1 expected=1
+  [ok ] validation   zero credentials invented                  got=0 expected=0
+  [ok ] validation   15 users still without credentials         got=15 expected=15
+  original-table rows after : 104 (expected 104, unchanged: True)
+  ledger: applied (92 ms)

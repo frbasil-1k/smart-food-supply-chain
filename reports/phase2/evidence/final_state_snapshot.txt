@@ -1,0 +1,42 @@
+# Phase 2 final state snapshot (2026-11-16 16:17:10)
+
+== databases present ==
++-----------------------------------------+---------+--------------------+
+| SCHEMA_NAME                             | charset | collation          |
++-----------------------------------------+---------+--------------------+
+| sfc_restore_verify                      | utf8mb4 | utf8mb4_0900_ai_ci |
+| smart_food_supply_chain                 | utf8mb4 | utf8mb4_0900_ai_ci |
+| smart_food_supply_chain_dev             | utf8mb4 | utf8mb4_0900_ai_ci |
+| smart_food_supply_chain_phase2_test_dev | utf8mb4 | utf8mb4_0900_ai_ci |
++-----------------------------------------+---------+--------------------+
+== per-database object counts ==
++-----------------------------------------+--------+-------+----------+--------+------+
+| db                                      | tables | views | triggers | checks | fks  |
++-----------------------------------------+--------+-------+----------+--------+------+
+| sfc_restore_verify                      |     15 |     2 |       16 |      6 |   25 |
+| smart_food_supply_chain                 |     15 |     2 |       16 |      6 |   25 |
+| smart_food_supply_chain_dev             |     18 |     3 |       21 |     12 |   29 |
+| smart_food_supply_chain_phase2_test_dev |     18 |     3 |       21 |     12 |   29 |
++-----------------------------------------+--------+-------+----------+--------+------+
+== row counts: dev ==
++-------------------------+-------+
+| part                    | rows_ |
++-------------------------+-------+
+| original 15 tables      |   104 |
+| donation_status_history |     5 |
+| schema_migrations       |     9 |
+| TOTAL                   |   118 |
++-------------------------+-------+
+== server variable, final ==
++---------+----------------+
+| runtime | persisted_rows |
++---------+----------------+
+|       0 |              0 |
++---------+----------------+
+== migrator grants ==
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Grants for sfc_migrator@localhost                                                                                                                                   |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| GRANT USAGE ON *.* TO `sfc_migrator`@`localhost`                                                                                                                    |
+| GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE VIEW, TRIGGER ON `smart_food_supply_chain_dev`.* TO `sfc_migrator`@`localhost` |
++---------------------------------------------------------------------------------------------------------------------------------------------------------------------+

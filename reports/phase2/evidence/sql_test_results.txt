@@ -1,0 +1,70 @@
+Phase 2 SQL-layer test matrix on smart_food_supply_chain_phase2_test_dev
+generated: C:\Users\basil\Desktop\Basil\dbms\dbms project
+
+ID        	expected        	observed                                	result	description
+F1-01     	0               	0                                                           	PASS	credentials after migration
+F1-02a    	accepted        	accepted                                                    	PASS	first credential for user 15
+F1-02b    	ERROR 1062      	ERROR 1062                                                  	PASS	second credential for same user
+F1-03     	ERROR 1452      	ERROR 1452                                                  	PASS	credential for nonexistent user
+F1-04     	accepted        	accepted                                                    	PASS	plaintext hash accepted by SQL (AUD flags it)
+F1-05     	ERROR 3819      	ERROR 3819                                                  	PASS	locked_until with failed_attempts = 0
+F1-06     	ERROR 3819      	ERROR 3819                                                  	PASS	token hash without expiry
+F1-07     	ERROR 3819      	ERROR 3819                                                  	PASS	expiry without token hash
+F1-08a    	accepted        	accepted                                                    	PASS	token pair set together
+F1-08b    	accepted        	accepted                                                    	PASS	token pair cleared together
+F1-09     	accepted        	accepted                                                    	PASS	deleting app_user 13 cascades the credential row
+F1-09b    	0               	0                                                           	PASS	credential row removed with its user
+F1-09c    	CASCADE         	CASCADE                                                     	PASS	fk_credential_user declares ON DELETE CASCADE
+F2a-B     	5               	5                                                           	PASS	history rows after 002b
+F2a-02    	ERROR 1644      	ERROR 1644                                                  	PASS	UPDATE on append-only history
+F2a-03    	ERROR 1644      	ERROR 1644                                                  	PASS	DELETE on append-only history
+F2a-04    	ERROR 3819      	ERROR 3819                                                  	PASS	genuine row with NULL changed_at
+F2a-05    	ERROR 3819      	ERROR 3819                                                  	PASS	reconstructed row with changed_at
+F2a-06    	ERROR 3819      	ERROR 3819                                                  	PASS	reconstructed row with an actor
+F2a-07    	ERROR 3819      	ERROR 3819                                                  	PASS	from_status = to_status
+F2a-08    	ERROR 1062      	ERROR 1062                                                  	PASS	second reconstructed row for one donation
+F2a-09a   	accepted        	accepted                                                    	PASS	genuine row 1 for one donation
+F2a-09b   	accepted        	accepted                                                    	PASS	genuine row 2 for the same donation
+F2a-10    	ERROR 1265      	ERROR 1265                                                  	PASS	to_status outside the enum
+F2b-01    	5               	5                                                           	PASS	reconstructed snapshots
+F2b-02    	0               	0                                                           	PASS	donations with no history
+F2b-03    	0               	0                                                           	PASS	duplicate snapshots per donation
+F2b-04    	5               	5                                                           	PASS	every reconstructed row carries the approved note
+F2b-05    	0               	0                                                           	PASS	no fabricated timestamps
+F3-01     	5/5/5           	5/5/5                                                       	PASS	legacy pickup NULLs (address/pincode/contact)
+X-02      	utf8mb4_0900_ai_ci	utf8mb4_0900_ai_ci                                          	PASS	new column collation
+F4a-01    	5/5             	5/5                                                         	PASS	legacy driver/schedule NULLs
+F4a-02    	ERROR 1644      	ERROR 1644                                                  	PASS	unknown driver id (the BEFORE INSERT trigger rejects the role first)
+F4a-02b   	app_user.user_id	app_user.user_id                                            	PASS	fk_delivery_driver exists and references app_user
+F4a-03a   	accepted        	accepted                                                    	PASS	two deliveries, same donation+branch (row 1)
+F4a-03b   	accepted        	accepted                                                    	PASS	two deliveries, same donation+branch (row 2)
+F4a-04    	0               	0                                                           	PASS	no unique index on (donation_id, recipient_branch_id)
+F4b-01    	ERROR 1644      	ERROR 1644                                                  	PASS	assign a manager as driver
+F4b-02    	accepted        	accepted                                                    	PASS	assign a real DRIVER
+F4b-03    	accepted        	accepted                                                    	PASS	later unrelated UPDATE of the same row
+F4b-04a   	accepted        	accepted                                                    	PASS	R3: driver's role later changed away from DRIVER
+F4b-04b   	accepted        	accepted                                                    	PASS	R3: unrelated update still accepted
+F4b-04c   	accepted        	accepted                                                    	PASS	restore the driver's role
+F4b-05    	ERROR 1644      	ERROR 1644                                                  	PASS	change attribution on a DELIVERED row
+F4b-06    	accepted        	accepted                                                    	PASS	update another column of a legacy DELIVERED row
+F4b-06b   	1               	1                                                           	PASS	legacy driver still NULL after that update
+F4b-07a   	accepted        	accepted                                                    	PASS	clear the driver then attempt IN_TRANSIT
+F4b-07b   	ERROR 1644      	ERROR 1644                                                  	PASS	IN_TRANSIT without a driver (real probe)
+F4b-08    	accepted        	accepted                                                    	PASS	IN_TRANSIT with a valid driver
+F5-04     	ERROR 1644      	ERROR 1644                                                  	PASS	reduce below committed (delivered + spoiled)
+F5-03     	accepted        	accepted                                                    	PASS	reduce to exactly the committed amount (inclusive boundary)
+F5-01     	accepted        	accepted                                                    	PASS	increase above donated
+F5-05     	accepted        	accepted                                                    	PASS	unrelated column update on an item with children
+F5-11     	ERROR 1644      	ERROR 1644                                                  	PASS	re-parent an item that has allocations
+F5-12a    	accepted        	accepted                                                    	PASS	create an item with no children
+F5-06     	accepted        	accepted                                                    	PASS	reduce an item with no children
+F5-07     	ERROR 3819      	ERROR 3819                                                  	PASS	reduce to zero
+F5-12b    	accepted        	accepted                                                    	PASS	re-parent an item with no allocations
+F8-01     	accepted        	accepted                                                    	PASS	NULL temperature
+F8-02a    	accepted        	accepted                                                    	PASS	lower bound -50.00
+F8-02b    	accepted        	accepted                                                    	PASS	upper bound 150.00
+F8-03a    	ERROR 3819      	ERROR 3819                                                  	PASS	just below the lower bound (-50.01)
+F8-03b    	ERROR 3819      	ERROR 3819                                                  	PASS	just above the upper bound (150.01)
+F8-04     	accepted        	accepted                                                    	PASS	plausible 3.40 accepted (plausibility is not safety)
+
+64/64 matched.

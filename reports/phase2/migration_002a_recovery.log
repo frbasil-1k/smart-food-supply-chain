@@ -1,0 +1,17 @@
+
+=== apply 002a — 002a_donation_status_history.sql ===
+  purpose : history table, one-snapshot guarantee, append-only triggers
+  sha256  : dff2420ed3395bf46d88d98207f2d6216a273c710d037ab9f4dd32371efbf958
+  preconditions:
+  [ok ] precondition table absent                               got=0 expected=0
+  [ok ] precondition append-only triggers absent                got=0 expected=0
+  original-table rows before: 104
+  ledger: started
+  validation:
+  [ok ] validation   9 columns                                  got=9 expected=9
+  [ok ] validation   3 CHECK constraints                        got=3 expected=3
+  [ok ] validation   unique one-snapshot index                  got=1 expected=1
+  [ok ] validation   2 append-only triggers                     got=2 expected=2
+  [ok ] validation   empty before backfill                      got=0 expected=0
+  original-table rows after : 104 (expected 104, unchanged: True)
+  ledger: applied (184 ms)

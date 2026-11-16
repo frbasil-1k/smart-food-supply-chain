@@ -1,0 +1,12 @@
+
+=== apply 002a — 002a_donation_status_history.sql ===
+  purpose : history table, one-snapshot guarantee, append-only triggers
+  sha256  : dff2420ed3395bf46d88d98207f2d6216a273c710d037ab9f4dd32371efbf958
+  preconditions:
+  [ok ] precondition table absent                               got=0 expected=0
+  [ok ] precondition append-only triggers absent                got=0 expected=0
+  original-table rows before: 104
+  ledger: started
+  sql FAILED (exit 1):
+    ERROR 1419 (HY000) at line 91: You do not have the SUPER privilege and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable)
+  ledger: failed. Do NOT rerun. Diagnose with --probe 002a, then apply the recovery procedure in RUNNER_DESIGN.md §4.

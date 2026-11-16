@@ -1,0 +1,18 @@
+# STEP 5: recovery of 002a — documented case 'table + 0/1 trigger' (2026-11-16 16:08:57)
+# documented action: DROP TRIGGER leftovers (none exist), then re-create the objects
+# operator account: sfc_migrator@localhost (not root)
+
+-- preconditions asserted immediately before cleanup --
+SELECT DATABASE();
+  session database      = smart_food_supply_chain_dev
+  donation_status_history rows = 0   (must be 0)
+  trg_dsh_* triggers    = 0   (must be 0 — nothing to DROP)
+  inbound foreign keys  = 0   (must be 0)
+
+-- cleanup 1/2: drop the empty, never-populated partial table --
+   exit=0
+-- cleanup 2/2: remove the failed ledger row (details preserved in evidence/ledger_002a_verbatim.txt) --
+1
+
+-- state after cleanup --
+table_exists=0	ledger_rows=1

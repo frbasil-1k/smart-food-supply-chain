@@ -1,0 +1,15 @@
+
+=== apply 003 — 003_donation_pickup.sql ===
+  purpose : nullable pickup address, pincode, contact
+  sha256  : b25248227ca355832712a40e777c505bd66f4960f21ec637a6476bb1de27349a
+  preconditions:
+  [ok ] precondition columns absent                             got=0 expected=0
+  original-table rows before: 104
+  ledger: started
+  validation:
+  [ok ] validation   3 columns, all nullable                    got=3 expected=3
+  [ok ] validation   5 legacy addresses NULL                    got=5 expected=5
+  [ok ] validation   5 legacy pincodes NULL                     got=5 expected=5
+  [ok ] validation   5 legacy contacts NULL                     got=5 expected=5
+  original-table rows after : 104 (expected 104, unchanged: True)
+  ledger: applied (140 ms)

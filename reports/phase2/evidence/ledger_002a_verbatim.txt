@@ -1,0 +1,23 @@
+=== failed ledger row, verbatim (correct column names) ===
++---------+----------------------------------+------------------------------------------------------------------+---------+---------------------+---------------------+---------------------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| version | name                             | checksum                                                         | state   | started_at          | applied_at          | finished_at         | duration_ms | note                                                                                                                                                                              |
++---------+----------------------------------+------------------------------------------------------------------+---------+---------------------+---------------------+---------------------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| 001     | 001_user_credential.sql          | 2c42344488b703234ea1ae1ab53196e6f86051dd10993b5048094aa95c1ea2ff | applied | 2026-11-16 16:02:23 | 2026-11-16 16:02:23 | 2026-11-16 16:02:23 |          92 | NULL                                                                                                                                                                              |
+| 002a    | 002a_donation_status_history.sql | dff2420ed3395bf46d88d98207f2d6216a273c710d037ab9f4dd32371efbf958 | failed  | 2026-11-16 16:02:24 | NULL                | 2026-11-16 16:02:24 |          82 | ERROR 1419 (HY000) at line 91: You do not have the SUPER privilege and binary logging is enabled (you *might* want to use the less safe log_bin_trust_function_creators variable) |
++---------+----------------------------------+------------------------------------------------------------------+---------+---------------------+---------------------+---------------------+-------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+
+-- ledger DDL as created --
+*************************** 1. row ***************************
+       Table: schema_migrations
+Create Table: CREATE TABLE `schema_migrations` (
+  `version` varchar(20) NOT NULL,
+  `name` varchar(120) NOT NULL,
+  `checksum` char(64) NOT NULL,
+  `state` enum('started','applied','failed','rolled_back') NOT NULL DEFAULT 'started',
+  `started_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `applied_at` datetime DEFAULT NULL,
+  `finished_at` datetime DEFAULT NULL,
+  `duration_ms` int unsigned DEFAULT NULL,
+  `note` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`version`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci

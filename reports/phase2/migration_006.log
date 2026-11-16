@@ -1,0 +1,15 @@
+
+=== apply 006 — 006_inspection_temperature_check.sql ===
+  purpose : temperature plausibility CHECK (-50..150)
+  sha256  : c8aeb57a4121bcdaac4c9b37cf30428997540dd7e2ceeb9f00b35a8cb5e54f0b
+  preconditions:
+  [ok ] precondition constraint absent                          got=0 expected=0
+  [ok ] precondition no out-of-band readings                    got=0 expected=0
+  original-table rows before: 104
+  ledger: started
+  validation:
+  [ok ] validation   constraint enforced                        got=1 expected=1
+  [ok ] validation   no out-of-band readings                    got=0 expected=0
+  [ok ] validation   5 inspection rows intact                   got=5 expected=5
+  original-table rows after : 104 (expected 104, unchanged: True)
+  ledger: applied (135 ms)

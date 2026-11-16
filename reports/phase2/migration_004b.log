@@ -1,0 +1,16 @@
+
+=== apply 004b — 004b_delivery_driver_triggers.sql ===
+  purpose : role-on-change, immutability after DELIVERED, IN_TRANSIT gate
+  sha256  : 8e612c87435a57f0653f8facc3b60a6a89bd49592e75ea40461253f84616d838
+  preconditions:
+  [ok ] precondition triggers absent                            got=0 expected=0
+  [ok ] precondition columns present                            got=2 expected=2
+  original-table rows before: 104
+  ledger: started
+  validation:
+  [ok ] validation   2 triggers                                 got=2 expected=2
+  [ok ] validation   no wrongly attributed driver               got=0 expected=0
+  [ok ] validation   no transit without driver                  got=0 expected=0
+  [ok ] validation   5 legacy drivers still NULL                got=5 expected=5
+  original-table rows after : 104 (expected 104, unchanged: True)
+  ledger: applied (60 ms)

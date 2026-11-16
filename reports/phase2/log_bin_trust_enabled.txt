@@ -1,0 +1,14 @@
+# STEP 4: temporary enable of log_bin_trust_function_creators (2026-11-16 16:08:39)
+# exact statement executed as root: SET PERSIST log_bin_trust_function_creators = ON;
+
+exit=0
+
++---------------+-----------------+
+| runtime_value | persisted_value |
++---------------+-----------------+
+|             1 | ON              |
++---------------+-----------------+
+
+-- grants unchanged (sfc_migrator) --
+GRANT USAGE ON *.* TO `sfc_migrator`@`localhost`
+GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, REFERENCES, INDEX, ALTER, CREATE VIEW, TRIGGER ON `smart_food_supply_chain_dev`.* TO `sfc_migrator`@`localhost`

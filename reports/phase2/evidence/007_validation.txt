@@ -1,0 +1,23 @@
+# 007 validation (V007-A..G) on smart_food_supply_chain_dev
+
++----------------------------------------+---------------------------------+---------+
+| check_name                             | observed                        | verdict |
++----------------------------------------+---------------------------------+---------+
+| V007-A view + security type            | 1 row(s), SECURITY_TYPE=INVOKER | PASS    |
+| V007-B vw_donor_sustainability present | 1 row(s)                        | PASS    |
+| V007-C vw_driver_performance present   | 1 row(s)                        | PASS    |
+| V007-D negative balances               | 0 row(s)                        | PASS    |
+| V007-E delivered > donated             | 0 row(s)                        | PASS    |
+| V007-F one row per DONOR account       | 4 view rows vs 4 donors         | PASS    |
+| V007-G no root definer                 | DEFINER=sfc_migrator@localhost  | PASS    |
++----------------------------------------+---------------------------------+---------+
+
+-- the new view's rows in the migrated database --
++----------+------------------+-----------------+------------------+--------------+------------+--------------------------+
+| donor_id | donor_name       | total_donations | total_donated_kg | delivered_kg | spoiled_kg | undistributed_balance_kg |
++----------+------------------+-----------------+------------------+--------------+------------+--------------------------+
+|        2 | Demo Donor       |               1 |            15.00 |        15.00 |       0.00 |                     0.00 |
+|       14 | Restaurant Donor |               1 |            17.00 |        17.00 |       0.00 |                     0.00 |
+|       15 | Hotel Donor      |               2 |            20.00 |        15.00 |       1.50 |                     3.50 |
+|       16 | Bakery Donor     |               1 |            14.00 |        14.00 |       0.00 |                     0.00 |
++----------+------------------+-----------------+------------------+--------------+------------+--------------------------+

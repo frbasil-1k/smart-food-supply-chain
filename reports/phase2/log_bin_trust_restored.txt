@@ -1,0 +1,22 @@
+# log_bin_trust_function_creators — RESTORED (2026-11-16 16:09:23)
+# statements executed as root, in this order:
+#   SET GLOBAL log_bin_trust_function_creators = OFF;
+#   RESET PERSIST IF EXISTS log_bin_trust_function_creators;
+
+set global off exit=0
+reset persist exit=0
+
+-- runtime value (must be 0) --
++---------------+
+| runtime_value |
++---------------+
+|             0 |
++---------------+
+-- persisted entry (must be absent) --
+-- full persisted variable list (must be empty, as before) --
+-- binlog settings unchanged --
++---------+---------------+---------------------+
+| log_bin | binlog_format | log_replica_updates |
++---------+---------------+---------------------+
+|       1 | ROW           |                   1 |
++---------+---------------+---------------------+
