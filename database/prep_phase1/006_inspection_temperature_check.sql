@@ -1,0 +1,72 @@
+-- ============================================================================
+-- 006_inspection_temperature_check.sql   —   F8: instrument plausibility
+-- DRAFT — UNEXECUTED. Do not run outside the approved migration batch.
+--
+-- One CHECK constraint on INSPECTION_LOG. No column change, no data change.
+--
+-- PRECONDITION (require 0):
+--   SELECT COUNT(*) FROM inspection_log
+--    WHERE temperature_c IS NOT NULL
+--      AND (temperature_c < -50 OR temperature_c > 150);
+--   SELECT COUNT(*) FROM information_schema.table_constraints
+--    WHERE table_schema = DATABASE() AND constraint_name = 'chk_temperature_range';
+-- ============================================================================
+
+ALTER TABLE `inspection_log`
+  ADD CONSTRAINT `chk_temperature_range`
+  CHECK (`temperature_c` IS NULL
+         OR (`temperature_c` >= -50 AND `temperature_c` <= 150));
+
+-- ---------------------------------------------------------------------------
+-- Why this exact expression
+-- ---------------------------------------------------------------------------
+-- * Column confirmed from the live schema: `inspection_log.temperature_c`
+--   DECIMAL(5,2) NULL. DECIMAL(5,2) spans -999.99..999.99, so the band fits
+--   without changing the type.
+-- * `IS NULL OR ...` keeps "temperature not taken" legal. 1 row may be NULL
+--   today; NULL must never be coerced to 0 or rejected.
+-- * Inclusive bounds: -50.00 and 150.00 are accepted, -50.01 and 150.01 are not.
+--
+-- ---------------------------------------------------------------------------
+-- What this constraint is, and is not
+-- ---------------------------------------------------------------------------
+-- It is an INSTRUMENT-PLAUSIBILITY test: it catches a decimal-point slip
+-- (3.4 typed as 34), a probe in the wrong unit, or a sensor fault. It is NOT a
+-- food-safety rule and must never be presented as one:
+--   4.0 C passes the check and can still be unsafe for a hot dish;
+--   -18 C passes and is correct for frozen goods;
+--   the safety decision remains `safety_status` (PASSED / FAILED / NEEDS_REVIEW)
+--   plus packaging_integrity and remarks, recorded by the inspector.
+-- The UI must not turn a passing plausibility band into a green "safe" badge.
+--
+-- ---------------------------------------------------------------------------
+-- MySQL 8.0.46 behaviour that makes this a one-shot decision
+-- ---------------------------------------------------------------------------
+-- CHECK constraints are enforced from 8.0.16 onward (verified: the existing 6
+-- CHECKs report ENFORCED=YES on this server, and the audit's negative probes
+-- are designed to prove enforcement on the dev database). Crucially,
+-- `ALTER TABLE ... ADD CHECK` VALIDATES EXISTING ROWS and fails atomically if
+-- any row violates it (SQLSTATE 3819). That is why the pre-check above must
+-- return 0 before this file is run — and why the range must not be widened
+-- merely to make the migration succeed. A violating existing row is a data
+-- question to review, not an obstacle to route around.
+--
+-- ---------------------------------------------------------------------------
+-- Validation after applying
+-- ---------------------------------------------------------------------------
+-- V006-A  constraint present on inspection_log, ENFORCED = YES
+-- V006-B  SELECT COUNT(*) FROM inspection_log
+--          WHERE temperature_c IS NOT NULL
+--            AND (temperature_c < -50 OR temperature_c > 150);        -- expect 0
+-- V006-C  NULL still accepted (dev DB):
+--         INSERT ... inspection with temperature_c = NULL;             -- success
+-- V006-D  boundaries accepted (dev DB): -50.00 and 150.00               -- success
+-- V006-E  out of band rejected (dev DB): -50.01 and 150.01              -- 3819
+--
+-- ---------------------------------------------------------------------------
+-- Rollback
+-- ---------------------------------------------------------------------------
+-- ALTER TABLE `inspection_log` DROP CHECK `chk_temperature_range`;
+-- Fully reversible. If rows outside the band were inserted after the
+-- constraint existed they cannot exist (the constraint rejected them), so the
+-- drop cannot fail on data.

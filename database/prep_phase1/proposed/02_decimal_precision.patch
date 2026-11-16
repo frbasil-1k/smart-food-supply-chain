@@ -1,0 +1,20 @@
+--- a/database/audit_db.py
++++ b/database/audit_db.py
+@@ -1404,15 +1404,15 @@
+                        "from confirmed per-driver totals; no backfill by decision)",
+                        "SELECT COUNT(*) AS n FROM delivery WHERE driver_user_id IS NULL")
+             self.check("driver_confirmed_delivered_kg", "OBSERVATION",
+                        "DELIVERED kg attributable to a RECORDED driver only",
+-                       "SELECT CAST(COALESCE(SUM(i.quantity_delivered_kg),0) AS SIGNED) AS n "
++                       "SELECT CAST(COALESCE(SUM(i.quantity_delivered_kg),0) AS DECIMAL(20,2)) AS n "
+                        "FROM delivery d JOIN delivery_item i ON i.delivery_id = d.delivery_id "
+                        "WHERE d.delivery_status = 'DELIVERED' AND d.driver_user_id IS NOT NULL")
+             self.check("driver_unconfirmed_delivered_kg", "OBSERVATION",
+                        "DELIVERED kg with no recorded driver (reported separately, "
+                        "never attributed to the route's current driver)",
+-                       "SELECT CAST(COALESCE(SUM(i.quantity_delivered_kg),0) AS SIGNED) AS n "
++                       "SELECT CAST(COALESCE(SUM(i.quantity_delivered_kg),0) AS DECIMAL(20,2)) AS n "
+                        "FROM delivery d JOIN delivery_item i ON i.delivery_id = d.delivery_id "
+                        "WHERE d.delivery_status = 'DELIVERED' AND d.driver_user_id IS NULL")
+         else:
+             print("  skipped  delivery.driver_user_id (F4 not applied)")

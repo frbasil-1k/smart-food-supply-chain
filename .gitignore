@@ -1,0 +1,34 @@
+# Credentials and local client configuration — never commit these.
+*.cnf
+.my.cnf
+.mylogin.cnf
+*.pem
+*.key
+*password*
+*secret*
+
+# Database backups and dumps (the verified backup lives outside the project).
+*.sql.dump
+*.dump
+/backup/
+/backups/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Node
+node_modules/
+dist/
+.vite/
+
+# Agent / tool state
+.freebuff/
+
+# OS noise
+Thumbs.db
+desktop.ini
+.DS_Store

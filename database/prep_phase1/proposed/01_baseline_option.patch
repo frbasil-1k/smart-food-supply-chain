@@ -1,0 +1,82 @@
+--- a/database/audit_db.py
++++ b/database/audit_db.py
+@@ -58,8 +58,19 @@
+               DB_NAME (smart_food_supply_chain),
+               DB_DRIVER (pymysql | mysql.connector),
+               DB_PASSWORD_FILE (file holding the password)
+ 
++Usage
++-----
++    python database/audit_db.py [--baseline PATH] [--out PATH]
++                                [--self-test | --negative-probes]
++
++    --baseline PATH  Compare the live schema against a different
++                     reference export instead of the frozen
++                     database/schema.sql - for example the
++                     post-migration export created after an approved
++                     batch. The frozen original is never modified.
++
+ Exit codes
+ ----------
+     0  clean: no structural or semantic mismatch, no invariant violated,
+        no check could not run
+@@ -75,9 +86,26 @@
+ import sys
+ from pathlib import Path
+ from typing import Any, Callable
+ 
+-SCHEMA_PATH = Path(__file__).resolve().parent / "schema.sql"
++# Frozen pre-migration reference export. Never rewritten by this script.
++DEFAULT_SCHEMA_PATH = Path(__file__).resolve().parent / "schema.sql"
++
++# Active baseline for every structural comparison. Rebinding this global
++# is how --baseline switches references without touching the default.
++SCHEMA_PATH = DEFAULT_SCHEMA_PATH
++
++
++def set_baseline(path: str) -> Path:
++    """Point parse_schema()/compare_export() at `path` instead.
++
++    The default baseline is deliberately NOT replaced: database/schema.sql
++    stays the frozen pre-migration export, and a post-migration export is
++    a separate file passed here.
++    """
++    global SCHEMA_PATH
++    SCHEMA_PATH = Path(path).expanduser().resolve()
++    return SCHEMA_PATH
+ 
+ TABLES = [
+     "organization", "branch", "app_user", "route", "coverage_area",
+     "route_assignment", "donation", "food_category", "donation_item",
+@@ -1863,8 +1891,19 @@
+     args = sys.argv[1:]
+     if "--help" in args or "-h" in args:
+         print(__doc__)
+         return 0
++    if "--baseline" in args:
++        i = args.index("--baseline")
++        if i + 1 >= len(args):
++            print("--baseline needs a path", file=sys.stderr)
++            return 1
++        if not Path(args[i + 1]).expanduser().is_file():
++            print(f"ERROR: --baseline {args[i + 1]} not found",
++                  file=sys.stderr)
++            return 1
++        set_baseline(args[i + 1])
++
+     if "--self-test" in args:
+         return run_self_test()
+ 
+     out_path = None
+@@ -1882,8 +1921,11 @@
+         if not SCHEMA_PATH.exists():
+             print(f"ERROR: {SCHEMA_PATH} not found")
+             return 1
+ 
++        origin = ("frozen original" if SCHEMA_PATH == DEFAULT_SCHEMA_PATH
++                  else "override via --baseline")
++        print(f"BASELINE: {SCHEMA_PATH}  ({origin})")
+         schema = parse_schema()
+         print_static(schema)
+ 
+         hr("B. LIVE DATABASE INSPECTION (read-only)")

@@ -1,0 +1,111 @@
+-- ============================================================================
+-- 003_donation_pickup.sql   —   F3: where the driver actually goes
+-- DRAFT — UNEXECUTED. Do not run outside the approved migration batch.
+--
+-- Three nullable columns on DONATION. No backfill, no default values: the
+-- historical pickup details were never recorded and must not be invented.
+--
+-- PRECONDITION (require 0 rows):
+--   SELECT column_name FROM information_schema.columns
+--    WHERE table_schema = DATABASE() AND table_name = 'donation'
+--      AND column_name IN ('pickup_address','pickup_pincode','pickup_contact');
+-- ============================================================================
+
+ALTER TABLE `donation`
+  ADD COLUMN `pickup_address` VARCHAR(255) NULL DEFAULT NULL
+    COMMENT 'Free-form pickup address; NULL = not recorded (legacy)' AFTER `pickup_datetime`,
+  ADD COLUMN `pickup_pincode` VARCHAR(10)  NULL DEFAULT NULL
+    COMMENT 'Indian PIN, stored normalised as 6 digits; NULL = not recorded' AFTER `pickup_address`,
+  ADD COLUMN `pickup_contact` VARCHAR(15)  NULL DEFAULT NULL
+    COMMENT 'Pickup contact, stored normalised as +91XXXXXXXXXX; NULL = not recorded' AFTER `pickup_pincode`;
+
+-- ---------------------------------------------------------------------------
+-- Column choices
+-- ---------------------------------------------------------------------------
+-- VARCHAR(255) address  Matches branch.address. Single free-form line keeps the
+--                       migration minimal; the UI collects structured fields and
+--                       composes one line, so no city/state columns are invented
+--                       here.
+-- VARCHAR(10) pincode   Real PINs are 6 digits; the extra room absorbs a space
+--                       or hyphen variant on input before the backend normalises
+--                       to exactly 6 digits. Cannot be NOT NULL: legacy rows.
+-- VARCHAR(15) contact   Matches app_user.phone. '+919876543210' is 13 characters.
+--                       Stored canonical (+91 then 10 digits) after validation.
+--
+-- NULL is meaningful, not missing: it is the truthful "not recorded" state for
+-- the 5 existing donations. The API returns null and the UI prints
+-- "Pickup address not recorded" with an edit action for the donor; a driver
+-- task card shows the same warning instead of a blank space.
+--
+-- ---------------------------------------------------------------------------
+-- Validation rules (backend, Pydantic + service; deliberately NOT a DB CHECK)
+-- ---------------------------------------------------------------------------
+-- pickup_address  required on create/update of a non-legacy donation;
+--                 trimmed, 10..255 characters after collapsing whitespace;
+--                 must not be only punctuation/digits.
+-- pickup_pincode  input accepts "560001", "560 001", "560-001";
+--                 normalise by stripping spaces/hyphens, then require ^[1-9][0-9]{5}$
+--                 (first digit 1..9 — Indian PINs never start with 0);
+--                 reject leading zeros and any non-digit remainder.
+-- pickup_contact  strip spaces, hyphens, parentheses and a leading 0;
+--                 accept 10 digits starting 6..9, or +91 followed by those;
+--                 store "+91" + 10 digits. Landlines ("080…") are rejected for
+--                 pickup coordination, which is a mobile workflow.
+--
+-- Why no CHECK constraint for these formats:
+--   A DB CHECK would be a one-way door. Indian addressing is not uniform
+--   (campus addresses, "Opp. …", 6-digit PINs written with a space, contacts
+--   that are legitimate but not mobile). A mistaken CHECK forces an ALTER to
+--   relax it on a live table, while a wrong value in an address is a data-entry
+--   issue that the API rejects before it reaches the database. Format rules
+--   live in one place (the schema module) and are reported by the audit as
+--   observations, not hard failures.
+--
+--   If a DB-level guard is still wanted later, this is the statement — test it
+--   on smart_food_supply_chain_dev first, because REGEXP inside CHECK must be
+--   verified on 8.0.46 before it is trusted:
+--
+--   ALTER TABLE donation
+--     ADD CONSTRAINT chk_pickup_pincode_format
+--     CHECK (pickup_pincode IS NULL OR pickup_pincode REGEXP '^[1-9][0-9]{5}$');
+--
+--   It is intentionally omitted from this migration. Adding it later is a
+--   separate, reviewable migration.
+--
+-- ---------------------------------------------------------------------------
+-- Indexing: none added, deliberately
+-- ---------------------------------------------------------------------------
+-- There is no approved screen that filters or sorts by pickup address or PIN.
+-- The donor lists their own donations (donor_user_id index), the manager filters
+-- by status/date, and the driver reads by route/assignment. Adding an index for
+-- a query that does not exist would cost write throughput for nothing.
+-- If a "pickups by PIN" or route-planning-by-area screen is approved, add
+-- `KEY idx_donation_pickup_pincode (pickup_pincode, pickup_datetime)` in its own
+-- migration and justify it with EXPLAIN on the 20k-row dev dataset.
+--
+-- ---------------------------------------------------------------------------
+-- Do not use pickup_datetime as creation time
+-- ---------------------------------------------------------------------------
+-- `pickup_datetime` is the scheduled pickup window and can be in the future or
+-- renegotiated. Nothing in this design derives "donation created at" from it.
+-- Genuine record creation time is not stored on this table; if the product needs
+-- it later, that is a new `created_at` column with its own migration and a
+-- documented backfill policy (most likely NULL for existing rows).
+--
+-- ---------------------------------------------------------------------------
+-- Validation after applying (read-only)
+-- ---------------------------------------------------------------------------
+-- V003-A  three columns exist, all IS_NULLABLE = YES, no default
+-- V003-B  SELECT COUNT(*) FROM donation WHERE pickup_address IS NULL;  -- expect 5
+-- V003-C  after go-live, new donations must never be NULL; assert in the API
+--         test suite rather than by a time-based query on pickup_datetime.
+--
+-- ---------------------------------------------------------------------------
+-- Rollback
+-- ---------------------------------------------------------------------------
+-- ALTER TABLE `donation`
+--   DROP COLUMN `pickup_contact`,
+--   DROP COLUMN `pickup_pincode`,
+--   DROP COLUMN `pickup_address`;
+-- Loses any addresses entered after go-live. Reversible structurally, not
+-- data-wise.
