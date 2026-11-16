@@ -1,0 +1,10 @@
+package deviation evidence - 2026-11-16T10:24:58Z
+
+approved (from phase1_migration_prep_revision.zip MANIFEST):
+  RUNNER_DESIGN.md d6b076a29aff4adab1d273135fd31ad52172a5a138571ae7addabc4e13d69dcc
+current working copy:
+  aa640c59c5b97708db514981b04f398dea2abeba333d600d42aaca1f137e9361 *database/prep_phase1/RUNNER_DESIGN.md
+
+unapproved-change scan (files differing from approved manifest):
+  CHANGED: RUNNER_DESIGN.md
+  (all other 23 entries identical)

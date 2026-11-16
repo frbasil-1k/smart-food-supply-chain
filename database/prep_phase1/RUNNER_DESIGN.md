@@ -61,6 +61,10 @@ immutable once applied. Changed intent means a new versioned file.
 
 ## 3. Apply algorithm
 
+Every step below runs against the development target
+`smart_food_supply_chain_dev`. The original `smart_food_supply_chain` is never a
+runner target (§8).
+
 ```
 for each file in sorted order:
     if ledger.applied(version):
@@ -134,9 +138,12 @@ wildcard plus exceptions, because MySQL cannot express exceptions (see §5c).
 ```sql
 CREATE USER 'sfc_migrator'@'localhost' IDENTIFIED BY '<from secret store>';
 
+-- Phase 2 target is the DEVELOPMENT clone only. The original database name must
+-- never appear in this account's grants: one migration reaching it is exactly the
+-- mistake this design exists to prevent.
 GRANT ALTER, CREATE, DROP, INDEX, REFERENCES, TRIGGER, CREATE VIEW,
       INSERT, SELECT, UPDATE, DELETE
-   ON smart_food_supply_chain.* TO 'sfc_migrator'@'localhost';
+   ON smart_food_supply_chain_dev.* TO 'sfc_migrator'@'localhost';
 ```
 
 Every privilege above is required by a file in this package. The two additions
@@ -209,6 +216,14 @@ That is 1 database-wide `SELECT, INSERT` plus **15 single-table statements**: 12
 `donation_status_history`. Keep the statements separate: MySQL accepts exactly one
 table per `GRANT`, so combining several tables after `ON` in a single statement is
 a syntax error (1064) that fails before any privilege is checked.
+
+**Phase 2 does not create `sfc_app` and does not execute any of these grants.** They
+are written against the production database name because that is the database the
+application will use in service; an application developed against
+`smart_food_supply_chain_dev` would name that database instead. Creating this
+account is deferred until the ledger-`INSERT` limitation in §5d is resolved by the
+application-security review — the database-wide `INSERT` would otherwise let the
+application write rows into `schema_migrations`.
 
 Resulting ability, stated per table that matters:
 
@@ -302,8 +317,10 @@ before batch:
   python database/audit_db.py --out reports\audit_pre.txt          # expect 0
   (plus proposed/ candidate when adopting --baseline)
 after the whole batch is applied and validated:
+  # structure-only export of the migrated DEVELOPMENT database; the frozen
+  # original export (database/schema.sql) is never overwritten
   mysqldump --no-data --routines --triggers --events \
-      smart_food_supply_chain > database/schema_post_migrations.sql
+      smart_food_supply_chain_dev > database/schema_post_migrations.sql
   python database/audit_db.py --baseline database/schema_post_migrations.sql \
       --out reports\audit_post.txt                                  # expect 0
 ```
@@ -349,8 +366,14 @@ value would pass step 4 and fail step 5.
 - Re-run DDL whose object already exists, or "clean up" by dropping and
   recreating an object that holds data.
 - Store, print or accept a password on the command line.
-- Touch `smart_food_supply_chain_dev`, which does not exist yet and is created
-  later, deliberately, in its own phase.
+- Touch the original `smart_food_supply_chain` in any way. The runner operates
+  only on the explicitly approved development target
+  `smart_food_supply_chain_dev` — a name that must end in `_dev` — and only after
+  `SELECT DATABASE()` confirms it. Read-only work against the original (baseline
+  audit, preflight, fingerprint capture, `mysqldump`) is performed by separate,
+  non-runner commands and never by this tool.
+- Apply a file to any database whose name does not end in `_dev`, or continue
+  after a resolver has not cleared a `started`/`failed` row.
 - Grant `UPDATE`/`DELETE` database-wide and then try to `REVOKE` them on one
   table. Privileges are additive; the revoke fails with 1147 (or 1141) and the
   wildcard right survives (§5c). Start from the narrow base instead.
