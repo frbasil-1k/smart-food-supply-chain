@@ -6,6 +6,8 @@
 *.key
 *password*
 *secret*
+!apps/api/src/sfc_api/security/passwords.py
+!apps/api/src/sfc_api/security/common_passwords.txt
 
 # Database backups and dumps (the verified backup lives outside the project).
 *.sql.dump
@@ -19,6 +21,7 @@ __pycache__/
 .venv/
 venv/
 .pytest_cache/
+*.egg-info/
 
 # Node
 node_modules/
@@ -32,3 +35,20 @@ dist/
 Thumbs.db
 desktop.ini
 .DS_Store
+
+# Local application environment — copy .env.example and keep secrets out of git.
+.env
+.env.*
+!.env.example
+
+# Python quality/test caches
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+coverage/
+
+# Frontend test and build artifacts
+playwright-report/
+test-results/
+*.tsbuildinfo

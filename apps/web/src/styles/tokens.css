@@ -1,0 +1,111 @@
+/* Brand tokens: the single source of colour and type for the web app. */
+:root {
+  --oat: #f4f0e6;
+  --forest: #21483b;
+  --terracotta: #d9844b;
+  --paper: #ffffff;
+  --charcoal: #1c1b18;
+  --ink-soft: #5f5c53;
+  --line: #d9d3c4;
+  --line-strong: #b9b2a0;
+  --oat-deep: #eae4d5;
+
+  /* Semantic shadcn/ui tokens mapped onto the brand palette. */
+  --background: var(--oat);
+  --foreground: var(--charcoal);
+  --card: var(--paper);
+  --card-foreground: var(--charcoal);
+  --popover: var(--paper);
+  --popover-foreground: var(--charcoal);
+  --primary: var(--forest);
+  --primary-foreground: var(--oat);
+  --secondary: var(--oat-deep);
+  --secondary-foreground: var(--charcoal);
+  --muted: var(--oat-deep);
+  --muted-foreground: var(--ink-soft);
+  --accent: var(--oat-deep);
+  --accent-foreground: var(--forest);
+  --destructive: var(--charcoal);
+  --destructive-foreground: var(--oat);
+  --border: var(--line);
+  --input: var(--line-strong);
+  --ring: var(--forest);
+
+  --chart-1: var(--forest);
+  --chart-2: var(--terracotta);
+  --chart-3: var(--ink-soft);
+  --chart-4: color-mix(in srgb, var(--forest) 55%, var(--oat));
+  --chart-5: var(--line-strong);
+  --chart-6: var(--charcoal);
+
+  --sidebar: var(--forest);
+  --sidebar-foreground: var(--oat);
+  --sidebar-primary: var(--oat);
+  --sidebar-primary-foreground: var(--forest);
+  --sidebar-accent: color-mix(in srgb, var(--paper) 10%, transparent);
+  --sidebar-accent-foreground: var(--oat);
+  --sidebar-border: color-mix(in srgb, var(--paper) 16%, transparent);
+  --sidebar-ring: var(--oat);
+
+  /* Controls use 4px; panels use explicit 8px radii. */
+  --radius: 0.25rem;
+}
+
+@theme inline {
+  --font-sans: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Fraunces Variable", ui-serif, Georgia, serif;
+
+  --color-oat: var(--oat);
+  --color-forest: var(--forest);
+  --color-terracotta: var(--terracotta);
+  --color-paper: var(--paper);
+  --color-charcoal: var(--charcoal);
+  --color-ink-soft: var(--ink-soft);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-oat-deep: var(--oat-deep);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-chart-6: var(--chart-6);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --radius-4xl: calc(var(--radius) + 16px);
+}
